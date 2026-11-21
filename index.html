@@ -1,0 +1,796 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="دموی پیشنهادی DARIUSH Digital Studio برای سرور سنتر: انتخاب رم و دیسک سرور HPE ProLiant از کاتالوگ نمایشی با بررسی سازگاری سه‌حالته، ظرفیت زنده و برگهٔ استعلام آزمایشی.">
+<meta name="theme-color" content="#0e2240">
+<meta name="robots" content="noindex">
+<meta property="og:type" content="website">
+<meta property="og:title" content="پیکربندی رم و دیسک سرور · سرور سنتر">
+<meta property="og:description" content="دموی پیشنهادی DARIUSH Digital Studio برای سرور سنتر: انتخاب رم و دیسک سرور HPE ProLiant از کاتالوگ نمایشی با بررسی سازگاری سه‌حالته، ظرفیت زنده و برگهٔ استعلام آزمایشی.">
+<meta property="og:url" content="https://dariush-tech.github.io/server-center-config-demo/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232fd1c0'/%3E%3Crect x='7' y='8' width='18' height='6' rx='1.5' fill='none' stroke='%230e2240' stroke-width='2'/%3E%3Crect x='7' y='18' width='18' height='6' rx='1.5' fill='none' stroke='%230e2240' stroke-width='2'/%3E%3C/svg%3E">
+<title>پیکربندی سرور HPE ProLiant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700;800&family=JetBrains+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: a navy header carries the brand, the demo tag, the title and the sample-scenario button. A four-step bar
+   (server, RAM, disks, inquiry) sits under it. On desktop the step content runs beside a sticky summary of totals,
+   statuses and use-case guidance; on phones the summary follows the content and a compact totals bar sticks to the
+   bottom. Technical codes and capacities are isolated left-to-right runs inside the Persian text. */
+:root {
+  --bg: #f4f6f9;
+  --surface: #ffffff;
+  --surface-2: #eef2f7;
+  --ink: #0f1b2d;
+  --muted: #5a6577;
+  --line: #e0e6ee;
+  --line-strong: #c7d0dc;
+  --navy: #0e2240;
+  --navy-2: #173257;
+  --on-navy: #ffffff;
+  --btn: #0e2240;
+  --btn-ink: #ffffff;
+  --on-navy-muted: #b4c2d6;
+  --teal: #0a8383;
+  --teal-bright: #2fd1c0;
+  --teal-soft: #e0f4f2;
+  --teal-ink: #ffffff;
+  --ok: #11764f;     --ok-bg: #e2f4eb;
+  --bad: #be2430;    --bad-bg: #fde9ea;
+  --rev: #9a5200;    --rev-bg: #fff1d9;
+  --shadow: 0 1px 2px rgba(14, 34, 64, 0.06), 0 14px 32px -20px rgba(14, 34, 64, 0.35);
+  --r: 10px;
+  --body: "Vazirmatn", "Tahoma", "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0a1424; --surface: #111f36; --surface-2: #17284a; --ink: #e8eef7; --muted: #9aa9bf; --line: #22345a; --line-strong: #33496f;
+    --navy: #081429; --navy-2: #12264a; --on-navy-muted: #9fb2cc; --btn: #dbe6f5; --btn-ink: #0a1424;
+    --teal: #3fd8c8; --teal-bright: #3fd8c8; --teal-soft: #0f3a3d; --teal-ink: #062223;
+    --ok: #59d39e; --ok-bg: #11392b; --bad: #ff8b91; --bad-bg: #431a20; --rev: #f6bf68; --rev-bg: #3d2b10;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 14px 32px -20px rgba(0, 0, 0, 0.9);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0a1424; --surface: #111f36; --surface-2: #17284a; --ink: #e8eef7; --muted: #9aa9bf; --line: #22345a; --line-strong: #33496f;
+  --navy: #081429; --navy-2: #12264a; --on-navy-muted: #9fb2cc; --btn: #dbe6f5; --btn-ink: #0a1424;
+  --teal: #3fd8c8; --teal-bright: #3fd8c8; --teal-soft: #0f3a3d; --teal-ink: #062223;
+  --ok: #59d39e; --ok-bg: #11392b; --bad: #ff8b91; --bad-bg: #431a20; --rev: #f6bf68; --rev-bg: #3d2b10;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 14px 32px -20px rgba(0, 0, 0, 0.9);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 15.5px; line-height: 1.75; direction: rtl; -webkit-text-size-adjust: 100%; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+button:disabled { cursor: not-allowed; }
+:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+h1, h2, h3 { margin: 0; line-height: 1.35; text-wrap: balance; }
+p { margin: 0; }
+.wrap { max-width: 1220px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.muted { color: var(--muted); }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.ltr { direction: ltr; unicode-bidi: isolate; }
+.code { font-family: var(--mono); font-size: 0.86em; font-weight: 600; direction: ltr; unicode-bidi: isolate; letter-spacing: 0.01em; }
+.spec { direction: ltr; unicode-bidi: isolate; font-weight: 700; }
+.demo { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; color: var(--teal); background: var(--teal-soft); border-radius: 999px; padding: 0 8px; line-height: 1.8; white-space: nowrap; }
+
+/* buttons */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 9px 18px; border-radius: 8px; border: 1px solid transparent; font-weight: 700; line-height: 1.3; color: var(--ink); text-decoration: none; }
+.btn svg { width: 18px; height: 18px; flex: none; }
+.btn-teal { background: var(--teal); color: var(--teal-ink); }
+.btn-teal:hover:not(:disabled) { filter: brightness(1.08); }
+.btn-navy { background: var(--btn); color: var(--btn-ink); }
+.btn-line { background: var(--surface); border-color: var(--line-strong); font-weight: 500; }
+.btn-line:hover { border-color: var(--ink); }
+.btn-sm { min-height: 36px; padding: 5px 12px; font-size: 13.5px; }
+.btn:disabled { opacity: 0.5; }
+
+/* header */
+.head { background: var(--navy); color: var(--on-navy); background-image: repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 26px); }
+.head-top { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; padding-top: 14px; }
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 16px; }
+.brand svg { width: 32px; height: 32px; flex: none; }
+.tag { font-size: 11.5px; color: var(--navy); background: var(--teal-bright); padding: 1px 10px; border-radius: 999px; font-weight: 700; }
+.head-top .link { margin-inline-start: auto; border: 0; background: none; color: var(--on-navy-muted); font-size: 13px; text-decoration: underline; text-underline-offset: 3px; padding: 6px 2px; }
+.head-top .link:hover { color: var(--on-navy); }
+.head-main { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 14px 24px; padding-top: 18px; padding-bottom: 22px; }
+.head-main h1 { font-size: clamp(1.45rem, 3.8vw, 2.2rem); font-weight: 800; }
+.head-main p { color: var(--on-navy-muted); max-width: 62ch; margin-top: 4px; }
+.head-main .btn-teal { background: var(--teal-bright); color: var(--navy); }
+.reset-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 10px 14px; margin-bottom: 14px; border-radius: 8px; background: var(--navy-2); font-size: 14px; }
+.reset-bar p { flex: 1 1 260px; }
+.reset-bar .btn-line { background: transparent; color: var(--on-navy); border-color: var(--on-navy-muted); }
+
+/* scenario banner */
+.scn { position: sticky; top: 0; z-index: 40; background: var(--teal); color: var(--teal-ink); box-shadow: var(--shadow); }
+.scn .wrap { display: flex; align-items: center; gap: 12px; min-height: 52px; padding-top: 6px; padding-bottom: 6px; }
+.scn .n { flex: none; width: 30px; height: 30px; border-radius: 50%; background: rgba(255, 255, 255, 0.22); display: grid; place-items: center; font-weight: 800; font-size: 14px; }
+.scn p { flex: 1; font-weight: 500; font-size: 14.5px; line-height: 1.6; }
+.scn .bar { position: absolute; bottom: 0; right: 0; height: 3px; background: rgba(255, 255, 255, 0.8); transition: width 0.4s ease; }
+.scn button { border: 1px solid rgba(255, 255, 255, 0.6); background: transparent; color: inherit; border-radius: 8px; padding: 4px 12px; font-size: 13px; }
+
+/* steps */
+.steps { background: var(--surface); border-bottom: 1px solid var(--line); }
+.steps ol { list-style: none; margin: 0 auto; padding-top: 0; padding-bottom: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.steps li { min-width: 0; }
+.steps button { width: 100%; display: flex; align-items: center; gap: 10px; min-height: 58px; padding: 8px 6px; border: 0; background: none; text-align: start; color: var(--muted); position: relative; }
+.steps .n { flex: none; width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid var(--line-strong); display: grid; place-items: center; font-weight: 800; font-size: 13px; }
+.steps .l { font-weight: 500; font-size: 14px; line-height: 1.4; }
+.steps .l small { display: block; font-size: 11.5px; color: var(--muted); font-weight: 400; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.steps button[aria-current="step"] { color: var(--ink); }
+.steps button[aria-current="step"] .n { background: var(--btn); border-color: var(--btn); color: var(--btn-ink); }
+.steps button[aria-current="step"]::after { content: ""; position: absolute; left: 6px; right: 6px; bottom: -1px; height: 3px; background: var(--teal); border-radius: 3px 3px 0 0; }
+.steps button.done .n { background: var(--teal-soft); border-color: var(--teal); color: var(--teal); }
+.steps button:disabled { opacity: 0.55; }
+
+main { padding-top: 22px; padding-bottom: 40px; }
+.layout { display: grid; grid-template-columns: minmax(0, 1fr) 330px; gap: 24px; align-items: start; }
+.panel { display: grid; gap: 18px; min-width: 0; }
+.sec-h { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 6px 14px; }
+.sec-h h2 { font-size: 1.25rem; font-weight: 800; }
+.sec-h p { color: var(--muted); font-size: 14px; }
+.box { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; }
+.nav-row { display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-between; }
+
+/* servers */
+.servers { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.srv { position: relative; display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 14px; align-items: center; padding: 14px; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); text-align: start; }
+.srv:hover { border-color: var(--line-strong); }
+.srv[aria-checked="true"] { border-color: var(--teal); box-shadow: inset 0 0 0 1px var(--teal), var(--shadow); }
+.srv svg { width: 112px; height: auto; color: var(--navy); }
+.srv .nm { display: block; font-weight: 800; font-size: 15px; direction: ltr; unicode-bidi: isolate; text-align: right; }
+.srv .fm { display: block; font-size: 12.5px; color: var(--muted); margin-bottom: 4px; }
+.srv .ln { display: block; font-size: 13px; line-height: 1.7; }
+.srv .ck { position: absolute; top: 10px; left: 10px; width: 24px; height: 24px; border-radius: 50%; background: var(--teal); color: var(--teal-ink); display: none; place-items: center; }
+.srv[aria-checked="true"] .ck { display: grid; }
+.srv .ck svg { width: 14px; height: 14px; color: inherit; }
+.uses { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.use { display: grid; gap: 4px; justify-items: center; text-align: center; padding: 12px 8px; min-height: 92px; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); font-size: 14px; font-weight: 500; }
+.use svg { width: 26px; height: 26px; color: var(--muted); }
+.use small { font-size: 11.5px; color: var(--muted); font-weight: 400; line-height: 1.5; }
+.use[aria-checked="true"] { border-color: var(--teal); background: var(--teal-soft); box-shadow: inset 0 0 0 1px var(--teal); }
+.use[aria-checked="true"] svg { color: var(--teal); }
+
+/* parts */
+.info-strip { display: flex; flex-wrap: wrap; gap: 6px 18px; padding: 12px 14px; border-radius: var(--r); background: var(--surface-2); font-size: 13.5px; }
+.info-strip b { font-weight: 700; }
+.toggle { display: inline-flex; align-items: center; gap: 8px; font-size: 13.5px; cursor: pointer; }
+.toggle input { width: 18px; height: 18px; accent-color: var(--teal); }
+.parts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.part { display: grid; gap: 10px; align-content: start; padding: 14px; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); scroll-margin: 90px; }
+.part.sel { border-color: var(--line-strong); box-shadow: var(--shadow); }
+.part.sel.s-ok { border-color: color-mix(in srgb, var(--ok) 55%, transparent); }
+.part.sel.s-bad { border-color: var(--bad); box-shadow: inset 0 0 0 1px var(--bad); }
+.part.sel.s-rev { border-color: color-mix(in srgb, var(--rev) 65%, transparent); }
+.part.flash { animation: flash 1.4s ease-out; }
+@keyframes flash { 0%, 30% { box-shadow: 0 0 0 5px color-mix(in srgb, var(--teal) 40%, transparent); } 100% { box-shadow: none; } }
+.part-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px; }
+.part h3 { font-size: 15.5px; font-weight: 800; }
+.part .meta { display: flex; flex-wrap: wrap; gap: 2px 14px; font-size: 12.5px; color: var(--muted); }
+.st { display: grid; grid-template-columns: auto 1fr; gap: 2px 8px; align-items: start; padding: 8px 10px; border-radius: 8px; font-size: 13px; line-height: 1.65; }
+.st .pill { font-weight: 800; white-space: nowrap; display: inline-flex; align-items: center; gap: 5px; }
+.st .pill svg { width: 15px; height: 15px; }
+.st.pre { background: var(--surface-2); color: var(--muted); }
+.s-ok > .st:not(.pre), .st.ok { background: var(--ok-bg); }
+.s-ok .pill, .st.ok .pill, .t-ok { color: var(--ok); }
+.s-bad > .st:not(.pre), .st.bad { background: var(--bad-bg); }
+.s-bad .pill, .st.bad .pill, .t-bad { color: var(--bad); }
+.s-rev > .st:not(.pre), .st.rev { background: var(--rev-bg); }
+.s-rev .pill, .st.rev .pill, .t-rev { color: var(--rev); }
+.st ul { grid-column: 1 / -1; margin: 2px 0 0; padding-inline-start: 18px; }
+.fix { display: grid; gap: 6px; padding: 10px; border: 1px dashed var(--bad); border-radius: 8px; font-size: 13px; }
+.fix b { font-weight: 700; }
+.fix .btn { justify-content: flex-start; text-align: start; min-height: 38px; font-weight: 500; }
+.qty { display: flex; align-items: center; gap: 8px; justify-content: space-between; }
+.stepper { display: inline-flex; align-items: center; border: 1px solid var(--line-strong); border-radius: 8px; overflow: hidden; }
+.stepper button { width: 44px; height: 42px; border: 0; background: var(--surface-2); font-size: 20px; font-weight: 700; display: grid; place-items: center; }
+.stepper button:disabled { opacity: 0.4; }
+.stepper output { min-width: 46px; text-align: center; font-weight: 800; font-size: 16px; }
+.qty .sub { font-size: 13px; color: var(--muted); }
+
+/* aside */
+.aside { position: sticky; top: 74px; display: grid; gap: 12px; }
+.aside .box { display: grid; gap: 12px; }
+.aside h2 { font-size: 15px; font-weight: 800; }
+.sum-srv { font-size: 14px; }
+.sum-srv .spec { display: block; font-size: 15px; text-align: right; }
+.metrics { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.metric { padding: 10px; border-radius: 8px; background: var(--surface-2); }
+.metric span { display: block; font-size: 12px; color: var(--muted); }
+.metric b { display: block; font-size: 1.25rem; font-weight: 800; direction: ltr; unicode-bidi: isolate; text-align: right; line-height: 1.4; }
+.metric small { font-size: 12px; color: var(--muted); }
+.metric.pulse b { animation: pulse 0.6s ease-out; }
+@keyframes pulse { 0% { color: var(--teal); transform: scale(1.06); } 100% { transform: none; } }
+.counts { display: flex; flex-wrap: wrap; gap: 6px; font-size: 13px; }
+.counts span { display: inline-flex; align-items: center; gap: 5px; padding: 2px 10px; border-radius: 999px; font-weight: 700; }
+.counts .c-ok { background: var(--ok-bg); color: var(--ok); }
+.counts .c-rev { background: var(--rev-bg); color: var(--rev); }
+.counts .c-bad { background: var(--bad-bg); color: var(--bad); }
+.tips { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; font-size: 13px; }
+.tips li { display: grid; grid-template-columns: 18px 1fr; gap: 8px; align-items: start; }
+.tips svg { width: 16px; height: 16px; margin-top: 3px; }
+.tips .y { color: var(--ok); }
+.tips .n { color: var(--rev); }
+.note-s { font-size: 12px; color: var(--muted); line-height: 1.7; }
+
+/* sheet */
+.sheet { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); box-shadow: var(--shadow); overflow: hidden; }
+.sheet-h { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 14px; padding: 16px 18px; background: var(--navy); color: var(--on-navy); }
+.sheet-h h2 { font-size: 1.2rem; font-weight: 800; }
+.sheet-h p { font-size: 13px; color: var(--on-navy-muted); }
+.sheet-sec { padding: 16px 18px; border-top: 1px solid var(--line); display: grid; gap: 10px; }
+.sheet-sec:first-of-type { border-top: 0; }
+.sheet-sec h3 { font-size: 14px; font-weight: 800; }
+.kv { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 18px; margin: 0; }
+.kv dt { font-size: 12px; color: var(--muted); }
+.kv dd { margin: 0; font-weight: 700; }
+.tbl { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+.tbl th { text-align: start; font-size: 12px; color: var(--muted); font-weight: 500; padding: 6px 8px; border-bottom: 1px solid var(--line); }
+.tbl td { padding: 9px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.tbl tr:last-child td { border-bottom: 0; }
+.tbl .q { white-space: nowrap; font-weight: 700; }
+.tbl .why { display: block; font-size: 12.5px; color: var(--muted); }
+.alert { display: grid; gap: 8px; padding: 12px 14px; border-radius: 8px; font-size: 14px; }
+.alert.bad { background: var(--bad-bg); }
+.alert.bad h3 { color: var(--bad); }
+.alert.rev { background: var(--rev-bg); }
+.alert.rev h3 { color: var(--rev); }
+.alert ul { margin: 0; padding-inline-start: 18px; display: grid; gap: 6px; }
+.alert li .btn { margin-inline-start: 8px; vertical-align: middle; }
+textarea { width: 100%; min-height: 84px; padding: 10px 12px; border: 1px solid var(--line-strong); border-radius: 8px; background: var(--surface); font-size: 16px; line-height: 1.6; resize: vertical; }
+.actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.actions .hint { font-size: 13px; color: var(--bad); }
+.done { display: grid; gap: 10px; justify-items: start; padding: 18px; border: 1px solid var(--teal); background: var(--teal-soft); border-radius: var(--r); }
+.done h2 { font-size: 1.2rem; }
+.track { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; }
+.track b { font-family: var(--mono); font-size: 1.45rem; direction: ltr; unicode-bidi: isolate; letter-spacing: 0.03em; }
+details.history { font-size: 14px; }
+details.history summary { cursor: pointer; font-weight: 700; }
+.hist { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 6px; }
+.hist li { display: flex; flex-wrap: wrap; gap: 4px 12px; padding: 8px 10px; border-radius: 8px; background: var(--surface-2); font-size: 13px; }
+.empty { padding: 28px 18px; text-align: center; color: var(--muted); border: 1px dashed var(--line-strong); border-radius: var(--r); }
+
+/* mobile bar, toast, footer */
+.mbar { display: none; }
+.toast { position: fixed; z-index: 70; left: 50%; transform: translateX(-50%); bottom: calc(18px + env(safe-area-inset-bottom, 0px)); background: var(--navy); color: var(--on-navy); padding: 9px 16px; border-radius: 8px; font-size: 14px; box-shadow: var(--shadow); width: max-content; max-width: calc(100% - 32px); text-align: center; }
+.foot { border-top: 1px solid var(--line); }
+.foot .wrap { padding-top: 16px; padding-bottom: 24px; font-size: 12.5px; color: var(--muted); }
+
+@media (max-width: 1000px) {
+  .layout { grid-template-columns: minmax(0, 1fr); }
+  .aside { position: static; }
+  .servers, .parts { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 760px) {
+  .uses { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .steps .l small { display: none; }
+  .steps button { flex-direction: column; gap: 2px; min-height: 60px; text-align: center; }
+  .steps .l { font-size: 12.5px; }
+  .mbar { display: block; position: sticky; bottom: 0; z-index: 30; background: var(--surface); border-top: 1px solid var(--line); box-shadow: 0 -8px 24px -18px rgba(14, 34, 64, 0.5); padding-bottom: env(safe-area-inset-bottom, 0px); }
+  .mbar .wrap { display: flex; align-items: center; gap: 10px; min-height: 60px; padding-top: 6px; padding-bottom: 6px; }
+  .mbar .m { flex: 1; display: flex; gap: 12px; font-size: 12px; color: var(--muted); min-width: 0; flex-wrap: wrap; line-height: 1.4; }
+  .mbar .m b { display: block; color: var(--ink); font-size: 14px; direction: ltr; unicode-bidi: isolate; text-align: right; }
+  .mbar .btn { flex: none; }
+  .toast { bottom: calc(78px + env(safe-area-inset-bottom, 0px)); }
+  .srv { grid-template-columns: 84px minmax(0, 1fr); }
+  .srv svg { width: 84px; }
+  .kv { grid-template-columns: minmax(0, 1fr); }
+  .tbl thead { display: none; }
+  .tbl tr { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 10px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+  .tbl tr:last-child { border-bottom: 0; }
+  .tbl td { border: 0; padding: 0; }
+  .tbl td.c-st { grid-column: 1 / -1; }
+  .head-main .btn-teal { width: 100%; }
+  .sheet-h, .sheet-sec { padding-left: 14px; padding-right: 14px; }
+}
+@media (prefers-reduced-motion: reduce) { .part.flash, .metric.pulse b { animation: none; } .scn .bar { transition: none; } }
+</style>
+</head>
+<body>
+<header class="head">
+  <div class="wrap head-top">
+    <span class="brand">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><rect x="1" y="1" width="30" height="30" rx="7" fill="var(--teal-bright)"/><rect x="7" y="8" width="18" height="6" rx="1.5" fill="none" stroke="#0e2240" stroke-width="2"/><rect x="7" y="18" width="18" height="6" rx="1.5" fill="none" stroke="#0e2240" stroke-width="2"/><circle cx="21" cy="11" r="1.3" fill="#0e2240"/><circle cx="21" cy="21" r="1.3" fill="#0e2240"/></svg>
+      سرور سنتر
+    </span>
+    <span class="tag">دموی پیشنهادی DARIUSH Digital Studio</span>
+    <button class="link" type="button" id="reset-ask">بازنشانی دمو</button>
+  </div>
+  <div class="wrap head-main">
+    <div>
+      <h1>پیکربندی رم و دیسک سرور <span class="ltr">HPE ProLiant</span></h1>
+      <p>مدل و کاربرد را انتخاب کنید، رم و دیسک را از کاتالوگ نمایشی بچینید و همان پیکربندی را برای استعلام آماده کنید.</p>
+    </div>
+    <button class="btn btn-teal" type="button" id="scn-run">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>
+      اجرای سناریوی نمونه
+    </button>
+  </div>
+  <div class="wrap"><div class="reset-bar" id="reset-bar" hidden>
+    <p>پیکربندی فعلی و استعلام‌های آزمایشی این مرورگر پاک می‌شود.</p>
+    <button class="btn btn-teal btn-sm" type="button" id="reset-yes">بازنشانی</button>
+    <button class="btn btn-line btn-sm" type="button" id="reset-no">انصراف</button>
+  </div></div>
+</header>
+
+<div class="scn" id="scn" hidden role="status" aria-live="polite">
+  <div class="wrap"><span class="n" id="scn-n">۱</span><p id="scn-t"></p><button type="button" id="scn-stop">توقف</button></div>
+  <span class="bar" id="scn-bar" style="width:0"></span>
+</div>
+
+<nav class="steps" aria-label="مراحل پیکربندی"><ol class="wrap" id="steps"></ol></nav>
+
+<main class="wrap" id="main">
+  <div class="layout">
+    <div class="panel" id="panel"></div>
+    <aside class="aside" id="aside" aria-label="خلاصهٔ پیکربندی"></aside>
+  </div>
+</main>
+
+<div class="mbar" id="mbar"></div>
+<footer class="foot"><div class="wrap">قطعات، موجودی و قواعد سازگاری این صفحه دادهٔ نمایشی است و جای QuickSpecs و بررسی کارشناس را نمی‌گیرد. استعلام فقط در همین مرورگر ثبت می‌شود؛ شماره تلفن یا اطلاعات خصوصی خواسته نمی‌شود و پیامی ارسال نمی‌شود. نام‌های HPE و ProLiant متعلق به صاحبان آن‌هاست.</div></footer>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+/* =====================================================================
+   دادهٔ نمایشی و قواعد ثابت (قابل ویرایش)
+   SERVERS: مشخصات نمونهٔ هر مدل (نسل و نوع رم، تعداد اسلات، نوع و تعداد قفسهٔ دیسک)
+   RAM / DISK: کاتالوگ آزمایشی؛ ok = مدل‌هایی که قطعه در «فهرست سازگاری نمایشی» آن‌هاست.
+   قطعه‌ای که مشخصاتش ناقص است یا در فهرست نیست هرگز «سازگار» اعلام نمی‌شود.
+   ===================================================================== */
+const SERVERS = {
+  dl360g10p: { name: "ProLiant DL360 Gen10 Plus", form: "رک‌مونت 1U", chassis: "8SFF", u: 1, cpus: 2,
+    mem: { gen: "DDR4", speed: 3200, types: ["RDIMM", "LRDIMM"], slots: 32 },
+    bays: { ff: "SFF", count: 8, ifaces: ["SAS", "SATA"] } },
+  dl380g10p: { name: "ProLiant DL380 Gen10 Plus", form: "رک‌مونت 2U", chassis: "12LFF", u: 2, cpus: 2,
+    mem: { gen: "DDR4", speed: 3200, types: ["RDIMM", "LRDIMM"], slots: 32 },
+    bays: { ff: "LFF", count: 12, ifaces: ["SAS", "SATA"] } },
+  ml350g10: { name: "ProLiant ML350 Gen10", form: "تاور", chassis: "8SFF", u: 0, cpus: 2,
+    mem: { gen: "DDR4", speed: 2933, types: ["RDIMM", "LRDIMM"], slots: 24 },
+    bays: { ff: "SFF", count: 8, ifaces: ["SAS", "SATA"] } },
+  dl380g11: { name: "ProLiant DL380 Gen11", form: "رک‌مونت 2U", chassis: "8SFF", u: 2, cpus: 2,
+    mem: { gen: "DDR5", speed: 4800, types: ["RDIMM"], slots: 32 },
+    bays: { ff: "SFF", count: 8, ifaces: ["SAS", "SATA", "NVMe"] } },
+};
+const USES = {
+  virt: { label: "مجازی‌سازی", hint: "چند ماشین مجازی", media: "SSD", ramMin: 256, rawMin: 2 },
+  storage: { label: "ذخیره‌سازی و بکاپ", hint: "ظرفیت خام زیاد", media: "HDD", ramMin: 32, rawMin: 40 },
+  db: { label: "پایگاه داده", hint: "رم و SSD سریع", media: "SSD", ramMin: 128, rawMin: 1 },
+  file: { label: "فایل‌سرور", hint: "اشتراک فایل داخلی", media: "HDD", ramMin: 32, rawMin: 8 },
+};
+const G10P = ["dl360g10p", "dl380g10p"], SFF = ["dl360g10p", "ml350g10", "dl380g11"];
+const RAM = [
+  { code: "SC-M16-D4R32", cap: 16, gen: "DDR4", speed: 3200, type: "RDIMM", rank: "1Rx8", stock: 24, ok: G10P },
+  { code: "SC-M32-D4R32", cap: 32, gen: "DDR4", speed: 3200, type: "RDIMM", rank: "2Rx8", stock: 40, ok: G10P },
+  { code: "SC-M64-D4R32", cap: 64, gen: "DDR4", speed: 3200, type: "RDIMM", rank: "2Rx4", stock: 12, ok: G10P },
+  { code: "SC-M128-D4L32", cap: 128, gen: "DDR4", speed: 3200, type: "LRDIMM", rank: "4Rx4", stock: 4, ok: G10P },
+  { code: "SC-M32-D4R29", cap: 32, gen: "DDR4", speed: 2933, type: "RDIMM", rank: "2Rx4", stock: 10, ok: ["ml350g10"] },
+  { code: "SC-M64-D4R29", cap: 64, gen: "DDR4", speed: 2933, type: "RDIMM", rank: "2Rx4", stock: 6, ok: ["ml350g10"] },
+  { code: "SC-M32-D5R48", cap: 32, gen: "DDR5", speed: 4800, type: "RDIMM", rank: "2Rx8", stock: 16, ok: ["dl380g11"] },
+  { code: "SC-M64-D5R48", cap: 64, gen: "DDR5", speed: 4800, type: "RDIMM", rank: "2Rx4", stock: 6, ok: ["dl380g11"] },
+  { code: "SC-M16-D4U32", cap: 16, gen: "DDR4", speed: 3200, type: "UDIMM", rank: "1Rx8", stock: 8, ok: [] },
+  { code: "SC-M32-D4R-X", cap: 32, gen: "DDR4", speed: null, type: "RDIMM", rank: null, stock: 20, ok: [], note: "برند متفرقه؛ فرکانس و رنک ثبت نشده" },
+];
+const DISK = [
+  { code: "SC-H12-SAS10-S", tb: 1.2, media: "HDD", iface: "SAS", ff: "SFF", rpm: 10, stock: 30, ok: SFF },
+  { code: "SC-H24-SAS10-S", tb: 2.4, media: "HDD", iface: "SAS", ff: "SFF", rpm: 10, stock: 18, ok: SFF },
+  { code: "SC-S096-SATA-S", tb: 0.96, media: "SSD", iface: "SATA", ff: "SFF", stock: 25, ok: SFF },
+  { code: "SC-S192-SAS-S", tb: 1.92, media: "SSD", iface: "SAS", ff: "SFF", stock: 2, ok: SFF },
+  { code: "SC-N384-U3-S", tb: 3.84, media: "SSD", iface: "NVMe", ff: "SFF", stock: 8, ok: ["dl380g11"] },
+  { code: "SC-H8-SATA72-L", tb: 8, media: "HDD", iface: "SATA", ff: "LFF", rpm: 7.2, stock: 20, ok: ["dl380g10p"] },
+  { code: "SC-H12-SAS72-L", tb: 12, media: "HDD", iface: "SAS", ff: "LFF", rpm: 7.2, stock: 10, ok: ["dl380g10p"] },
+  { code: "SC-H16-SATA-L-X", tb: 16, media: "HDD", iface: "SATA", ff: "LFF", rpm: null, stock: 6, ok: [], note: "بدون سینی (کریر) و نسخهٔ فریم‌ور نامشخص" },
+];
+const BY = { ram: Object.fromEntries(RAM.map((x) => [x.code, x])), disk: Object.fromEntries(DISK.map((x) => [x.code, x])) };
+const STAT = { ok: "سازگار در دمو", rev: "نیازمند بررسی کارشناس", bad: "ناسازگار در دمو" };
+
+(() => {
+  const $ = (s, r = document) => r.querySelector(s);
+  const fa = (n) => Number(n).toLocaleString("fa-IR", { useGrouping: false });
+  const L = (s) => `<span class="ltr">${s}</span>`;
+  const C = (s) => `<span class="code">${s}</span>`;
+  const plain = (h) => h.replace(/<[^>]+>/g, "");
+  const num = (n) => String(Math.round(n * 100) / 100);
+  const ramTitle = (x) => `${x.cap}GB ${x.gen}${x.speed ? "-" + x.speed : ""} ${x.type}${x.rank ? " " + x.rank : ""}`;
+  const diskTitle = (x) => `${num(x.tb)}TB ${x.iface}${x.iface === "NVMe" ? " U.3" : ""} ${x.media === "SSD" ? "SSD" : (x.rpm ? x.rpm + "K " : "") + "HDD"} ${x.ff}`;
+  const capGB = (gb) => (gb >= 1024 ? num(gb / 1024) + " TB" : gb + " GB");
+  const capTB = (tb) => (tb >= 1 ? num(tb) + " TB" : Math.round(tb * 1000) + " GB");
+  const ICON = {
+    ok: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+    bad: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>',
+    rev: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v6M12 16.5v.5"/></svg>',
+  };
+  let tt;
+  function toast(m) { const t = $("#toast"); t.textContent = m; t.hidden = false; clearTimeout(tt); tt = setTimeout(() => (t.hidden = true), 2800); }
+
+  /* ---------- state ---------- */
+  const KEY = "server-center-config-demo-v1";
+  const blank = () => ({ step: 1, server: null, use: null, ram: {}, disk: {}, note: "", onlyFit: false, done: null });
+  let st = blank(), inq = [], seq = 3101;
+  try {
+    const d = JSON.parse(localStorage.getItem(KEY));
+    if (d && d.st) { st = Object.assign(blank(), d.st); inq = d.inq || []; seq = d.seq || seq; }
+    if (st.server && !SERVERS[st.server]) st.server = null;
+    ["ram", "disk"].forEach((k) => Object.keys(st[k]).forEach((c) => { if (!BY[k][c] || !(st[k][c] > 0)) delete st[k][c]; }));
+  } catch (e) {}
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify({ st, inq, seq })); } catch (e) {} };
+
+  /* ---------- rules ---------- */
+  const R = (s, text, fix) => ({ s, text, fix });
+  function ramStatic(x, sid) {
+    const m = SERVERS[sid].mem;
+    if (x.gen !== m.gen) return R("bad", `این مدل ${L(m.gen)} می‌خواهد؛ ماژول ${L(x.gen)} است.`, { kind: "alt" });
+    if (!m.types.includes(x.type)) return R("bad", `ماژول ${L(x.type)} در این مدل پشتیبانی نمی‌شود؛ فقط ${m.types.map(L).join(" و ")}.`, { kind: "alt" });
+    if (x.speed == null || x.rank == null) return R("rev", `مشخصات ماژول کامل نیست${x.note ? " (" + x.note + ")" : ""}.`);
+    if (x.ok.includes(sid)) return R("ok", "در فهرست سازگاری نمایشی این مدل است.");
+    if (x.speed !== m.speed) return R("rev", `ماژول ${L(x.speed)} برای سرور ${L(m.speed)}؛ در فهرست نمایشی این مدل نیست.`);
+    return R("rev", "در فهرست سازگاری نمایشی این مدل نیست.");
+  }
+  function diskStatic(x, sid) {
+    const b = SERVERS[sid].bays;
+    if (x.ff === "LFF" && b.ff === "SFF") return R("bad", `قفسهٔ این مدل ${L("SFF 2.5″")} است؛ دیسک ${L("LFF 3.5″")} جا نمی‌شود.`, { kind: "alt" });
+    if (!b.ifaces.includes(x.iface)) return R("bad", `قفسهٔ این مدل فقط ${b.ifaces.map(L).join(" و ")} است؛ دیسک ${L(x.iface)} پشتیبانی نمی‌شود.`, { kind: "alt" });
+    if (x.ff === "SFF" && b.ff === "LFF") return R("rev", `دیسک ${L("SFF")} در قفسهٔ ${L("LFF")} به سینی مبدل نیاز دارد.`);
+    if (x.note || (x.media === "HDD" && x.rpm == null)) return R("rev", `مشخصات دیسک کامل نیست${x.note ? " (" + x.note + ")" : ""}.`);
+    if (x.ok.includes(sid)) return R("ok", "در فهرست سازگاری نمایشی این مدل است.");
+    return R("rev", "در فهرست سازگاری نمایشی این مدل نیست.");
+  }
+  const rank = { ok: 0, rev: 1, bad: 2 };
+  function evaluate(kind, sid) {
+    const sel = Object.entries(st[kind]).filter(([, q]) => q > 0);
+    const lines = sel.map(([code, qty]) => {
+      const x = BY[kind][code];
+      return { kind, x, qty, rs: [kind === "ram" ? ramStatic(x, sid) : diskStatic(x, sid)] };
+    });
+    const s = SERVERS[sid], total = lines.reduce((a, l) => a + l.qty, 0);
+    const cap = kind === "ram" ? s.mem.slots : s.bays.count;
+    lines.forEach((l) => {
+      if (total > cap) l.rs.push(R("bad", kind === "ram" ? `مجموع ${fa(total)} ماژول از ${fa(cap)} اسلات این مدل بیشتر است.` : `مجموع ${fa(total)} دیسک از ${fa(cap)} قفسهٔ این مدل بیشتر است.`, { kind: "reduce", max: Math.max(0, cap - (total - l.qty)) }));
+      if (l.qty > l.x.stock) l.rs.push(R("rev", `موجودی نمایشی ${fa(l.x.stock)} عدد است؛ تأمین بقیه با کارشناس.`));
+    });
+    if (kind === "ram") {
+      const types = new Set(lines.map((l) => l.x.type).filter((t) => t === "RDIMM" || t === "LRDIMM"));
+      if (types.size > 1) lines.filter((l) => l.x.type === "RDIMM" || l.x.type === "LRDIMM").forEach((l) => l.rs.push(R("bad", `ترکیب ${L("RDIMM")} و ${L("LRDIMM")} در یک سرور مجاز نیست.`, { kind: "remove" })));
+      const caps = new Set(lines.filter((l) => l.rs[0].s !== "bad").map((l) => l.x.cap));
+      if (caps.size > 1) lines.forEach((l) => l.rs.push(R("rev", "ترکیب ظرفیت‌های مختلف؛ چیدمان اسلات‌ها باید بررسی شود.")));
+      if (total % 2 === 1 && s.cpus === 2) lines.forEach((l) => l.rs.push(R("rev", `تعداد کل (${fa(total)}) فرد است و بین دو پردازنده یکسان پخش نمی‌شود.`)));
+    }
+    lines.forEach((l) => {
+      l.rs.sort((a, b) => rank[b.s] - rank[a.s]);
+      l.s = l.rs[0].s;
+      if (l.s !== "ok") l.rs = l.rs.filter((r) => r.s !== "ok");
+    });
+    return { lines, total, cap };
+  }
+  function state() {
+    if (!st.server) return null;
+    const ram = evaluate("ram", st.server), disk = evaluate("disk", st.server);
+    const all = [...ram.lines, ...disk.lines];
+    return {
+      ram, disk, all,
+      ramGB: ram.lines.reduce((a, l) => a + l.x.cap * l.qty, 0),
+      rawTB: disk.lines.reduce((a, l) => a + l.x.tb * l.qty, 0),
+      n: { ok: all.filter((l) => l.s === "ok").length, rev: all.filter((l) => l.s === "rev").length, bad: all.filter((l) => l.s === "bad").length },
+    };
+  }
+  function alternatives(kind, x) {
+    const sid = st.server, use = USES[st.use];
+    const pool = (kind === "ram" ? RAM : DISK).filter((c) => c.code !== x.code && (kind === "ram" ? ramStatic(c, sid) : diskStatic(c, sid)).s === "ok");
+    const key = (c) => kind === "ram" ? Math.abs(c.cap - x.cap) : (use && c.media !== use.media ? 100 : 0) + Math.abs(c.tb - x.tb);
+    return pool.sort((a, b) => key(a) - key(b) || b.stock - a.stock).slice(0, 2);
+  }
+  function tips(S) {
+    if (!st.use || !S) return [];
+    const u = USES[st.use], out = [];
+    out.push([S.ramGB >= u.ramMin, `رم دست‌کم ${L(u.ramMin + " GB")} برای ${u.label}`]);
+    out.push([S.rawTB >= u.rawMin, `ظرفیت خام دست‌کم ${L(u.rawMin + " TB")}`]);
+    const hasMedia = S.disk.lines.some((l) => l.x.media === u.media);
+    out.push([hasMedia, u.media === "SSD" ? `دیسک ${L("SSD")} برای سرعت بیشتر` : `دیسک ${L("HDD")} برای ظرفیت ارزان‌تر`]);
+    if (st.use === "storage") out.push([SERVERS[st.server].bays.ff === "LFF", `قفسهٔ ${L("LFF")} برای ظرفیت بالا`]);
+    return out;
+  }
+
+  /* ---------- rendering ---------- */
+  const STEPS = [["سرور و کاربرد", "مدل و نوع استفاده"], ["رم", "نوع و تعداد ماژول"], ["دیسک", "نوع و تعداد دیسک"], ["برگهٔ استعلام", "بازبینی و ثبت"]];
+  function art(s) {
+    const bays = s.bays.count, lff = s.bays.ff === "LFF";
+    if (!s.u) {
+      let b = ""; for (let i = 0; i < 8; i++) b += `<rect x="${22 + (i % 2) * 18}" y="${16 + Math.floor(i / 2) * 9}" width="15" height="6" rx="1"/>`;
+      return `<svg viewBox="0 0 80 100" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><rect x="14" y="4" width="52" height="92" rx="4"/><g stroke-width="1.3">${b}</g><circle cx="40" cy="78" r="4"/></svg>`;
+    }
+    const h = s.u === 1 ? 22 : 40;
+    let b = "";
+    if (lff) { for (let i = 0; i < bays; i++) b += `<rect x="${10 + (i % 4) * 20}" y="${7 + Math.floor(i / 4) * 10}" width="17" height="7" rx="1"/>`; }
+    else { for (let i = 0; i < bays; i++) b += `<rect x="${14 + i * 9}" y="6" width="6" height="${h - 12}" rx="1"/>`; }
+    return `<svg viewBox="0 0 120 ${h + 4}" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="116" height="${h}" rx="3"/><g stroke-width="1.2">${b}</g><circle cx="${lff ? 104 : 100}" cy="${h / 2 + 2}" r="2.5" fill="currentColor"/></svg>`;
+  }
+  function renderSteps() {
+    const ready = !!st.server;
+    $("#steps").innerHTML = STEPS.map(([t, s], i) => {
+      const n = i + 1, cur = st.step === n, dis = n > 1 && !ready;
+      return `<li><button type="button" data-step="${n}" ${cur ? 'aria-current="step"' : ""} class="${n < st.step && ready ? "done" : ""}" ${dis ? "disabled" : ""}><span class="n">${fa(n)}</span><span class="l">${t}<small>${s}</small></span></button></li>`;
+    }).join("");
+  }
+  function navRow(back, next, nextLabel) {
+    return `<div class="nav-row">${back ? `<button class="btn btn-line" type="button" data-step="${back}">→ مرحلهٔ قبل</button>` : "<span></span>"}
+      ${next ? `<button class="btn btn-navy" type="button" data-step="${next}" ${!st.server ? "disabled" : ""}>${nextLabel || "مرحلهٔ بعد"} ←</button>` : ""}</div>`;
+  }
+  function step1() {
+    return `
+      <div class="sec-h"><h2>۱. مدل سرور</h2><p>چهار مدل نمونه با پیکربندی قفسهٔ مشخص <span class="demo">دادهٔ نمایشی</span></p></div>
+      <div class="servers" role="radiogroup" aria-label="مدل سرور">${Object.entries(SERVERS).map(([id, s]) => `
+        <button class="srv" type="button" role="radio" data-server="${id}" data-k="srv-${id}" aria-checked="${st.server === id}" id="srv-${id}">
+          ${art(s)}
+          <span><span class="nm">HPE ${s.name}</span><span class="fm">${s.form} · پیکربندی نمونهٔ ${L(s.chassis)}</span>
+            <span class="ln">حافظه: ${L(`${s.mem.gen}-${s.mem.speed} · ${s.mem.types.join("/")}`)} · ${fa(s.mem.slots)} اسلات</span>
+            <span class="ln">قفسهٔ دیسک: ${L(`${s.bays.count} × ${s.bays.ff} · ${s.bays.ifaces.join("/")}`)}</span></span>
+          <span class="ck">${ICON.ok}</span>
+        </button>`).join("")}</div>
+      <div class="sec-h"><h2>کاربرد مدنظر</h2><p>برای راهنمای ظرفیت؛ روی سازگاری اثر ندارد.</p></div>
+      <div class="uses" role="radiogroup" aria-label="کاربرد">${Object.entries(USES).map(([id, u]) => `
+        <button class="use" type="button" role="radio" data-use="${id}" data-k="use-${id}" aria-checked="${st.use === id}">${useIcon(id)}${u.label}<small>${u.hint}</small></button>`).join("")}</div>
+      ${navRow(null, 2, "انتخاب رم")}`;
+  }
+  function useIcon(id) {
+    const p = {
+      virt: '<rect x="3" y="4" width="18" height="12" rx="2"/><rect x="7" y="7" width="5" height="4" rx="1"/><rect x="13" y="9" width="5" height="4" rx="1"/><path d="M8 20h8M12 16v4"/>',
+      storage: '<ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/>',
+      db: '<path d="M4 5h16v5H4zM4 14h16v5H4z"/><path d="M8 7.5h.01M8 16.5h.01"/>',
+      file: '<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
+    }[id];
+    return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+  }
+  function stBlock(cls, s, rs, pre) {
+    const first = rs[0], more = rs.slice(1);
+    return `<div class="st ${cls}"><span class="pill t-${s}">${ICON[s]}${pre ? "پیش‌بررسی: " : ""}${STAT[s]}</span><span>${first.text}</span>${more.length ? `<ul>${more.map((r) => `<li>${r.text}</li>`).join("")}</ul>` : ""}</div>`;
+  }
+  function partCard(kind, x, line) {
+    const sid = st.server, qty = st[kind][x.code] || 0;
+    const pre = kind === "ram" ? ramStatic(x, sid) : diskStatic(x, sid);
+    const sel = !!line, s = sel ? line.s : pre.s;
+    let fix = "";
+    if (sel && line.s === "bad") {
+      const opts = [];
+      line.rs.filter((r) => r.s === "bad" && r.fix).forEach((r) => {
+        if (r.fix.kind === "alt") alternatives(kind, x).forEach((a) => opts.push(`<button class="btn btn-line" type="button" data-replace="${kind}|${x.code}|${a.code}">جایگزینی با ${L(kind === "ram" ? ramTitle(a) : diskTitle(a))}</button>`));
+        if (r.fix.kind === "reduce") opts.push(`<button class="btn btn-line" type="button" data-setq="${kind}|${x.code}|${r.fix.max}">کاهش تعداد به ${fa(r.fix.max)}</button>`);
+        if (r.fix.kind === "remove") opts.push(`<button class="btn btn-line" type="button" data-setq="${kind}|${x.code}|0">حذف این ردیف</button>`);
+      });
+      const uniq = [...new Set(opts)];
+      fix = `<div class="fix"><b>راه اصلاح</b>${uniq.join("") || '<span class="muted">این قطعه را حذف کنید یا تعداد را تغییر دهید.</span>'}</div>`;
+    }
+    const max = kind === "ram" ? 32 : 24;
+    return `<article class="part ${sel ? "sel s-" + s : ""}" id="part-${x.code}">
+      <div class="part-top">${C(x.code)}<span class="demo">دادهٔ نمایشی</span></div>
+      <h3><span class="spec">${kind === "ram" ? ramTitle(x) : diskTitle(x)}</span></h3>
+      <div class="meta"><span>موجودی نمایشی: ${fa(x.stock)} عدد</span>${kind === "disk" ? `<span>ظرفیت خام هر دیسک: ${L(capTB(x.tb))}</span>` : `<span>ظرفیت هر ماژول: ${L(x.cap + " GB")}</span>`}${x.note ? `<span>${x.note}</span>` : ""}</div>
+      ${sel ? stBlock("", s, line.rs, false) : stBlock("pre", pre.s, [pre], true)}
+      ${fix}
+      <div class="qty"><span class="sub">${sel ? (kind === "ram" ? `جمع: ${L(capGB(x.cap * qty))}` : `جمع خام: ${L(capTB(x.tb * qty))}`) : "انتخاب نشده"}</span>
+        <span class="stepper"><button type="button" data-inc="${kind}|${x.code}|-1" data-k="dec-${x.code}" aria-label="کم کردن ${x.code}" ${qty ? "" : "disabled"}>−</button><output aria-live="polite" aria-label="تعداد ${x.code}">${fa(qty)}</output><button type="button" data-inc="${kind}|${x.code}|1" data-k="inc-${x.code}" aria-label="افزودن ${x.code}" ${qty >= max ? "disabled" : ""}>+</button></span></div>
+    </article>`;
+  }
+  function stepParts(kind, S) {
+    const s = SERVERS[st.server], E = S[kind];
+    const list = (kind === "ram" ? RAM : DISK).filter((x) => !st.onlyFit || (st[kind][x.code] > 0) || (kind === "ram" ? ramStatic(x, st.server) : diskStatic(x, st.server)).s !== "bad");
+    const head = kind === "ram"
+      ? `<div class="sec-h"><h2>۲. رم</h2><p>این مدل: ${L(`${s.mem.gen}-${s.mem.speed} · ${s.mem.types.join("/")}`)} · ${fa(s.mem.slots)} اسلات</p></div>
+         <div class="info-strip"><span>رم کل: <b class="ltr">${capGB(S.ramGB)}</b></span><span>اسلات استفاده‌شده: <b>${fa(E.total)} از ${fa(E.cap)}</b></span></div>`
+      : `<div class="sec-h"><h2>۳. دیسک</h2><p>این مدل: ${L(`${s.bays.count} × ${s.bays.ff} · ${s.bays.ifaces.join("/")}`)}</p></div>
+         <div class="info-strip"><span>ظرفیت خام: <b class="ltr">${capTB(S.rawTB)}</b></span><span>قفسهٔ استفاده‌شده: <b>${fa(E.total)} از ${fa(E.cap)}</b></span><span class="muted">ظرفیت قابل‌استفاده پس از RAID کمتر است.</span></div>`;
+    return `${head}
+      <label class="toggle"><input type="checkbox" id="only-fit" ${st.onlyFit ? "checked" : ""}> پنهان کردن قطعه‌های ناسازگار با این مدل</label>
+      <div class="parts">${list.map((x) => partCard(kind, x, E.lines.find((l) => l.x.code === x.code))).join("")}</div>
+      ${navRow(kind === "ram" ? 1 : 2, kind === "ram" ? 3 : 4, kind === "ram" ? "انتخاب دیسک" : "برگهٔ استعلام")}`;
+  }
+  function summaryText(S) {
+    const s = SERVERS[st.server], out = [
+      "استعلام پیکربندی سرور · سرور سنتر (دادهٔ نمایشی)",
+      `مدل سرور: HPE ${s.name} (${s.chassis})`,
+      `کاربرد: ${st.use ? USES[st.use].label : "تعیین نشده"}`,
+    ];
+    S.ram.lines.forEach((l, i) => out.push(`رم ${fa(i + 1)}) ${ramTitle(l.x)} | کد ${l.x.code} | تعداد ${fa(l.qty)} | ${STAT[l.s]}${l.s !== "ok" ? ": " + plain(l.rs[0].text) : ""}`));
+    S.disk.lines.forEach((l, i) => out.push(`دیسک ${fa(i + 1)}) ${diskTitle(l.x)} | کد ${l.x.code} | تعداد ${fa(l.qty)} | ${STAT[l.s]}${l.s !== "ok" ? ": " + plain(l.rs[0].text) : ""}`));
+    out.push(`جمع رم: ${capGB(S.ramGB)} (${fa(S.ram.total)} ماژول)`);
+    out.push(`ظرفیت خام دیسک: ${capTB(S.rawTB)} (${fa(S.disk.total)} دیسک)`);
+    const rev = reviewList(S);
+    out.push(rev.length ? `موارد نیازمند بررسی: ${rev.map((r) => plain(r)).join("؛ ")}` : "موارد نیازمند بررسی: ندارد");
+    if (st.note.trim()) out.push(`توضیح: ${st.note.trim()}`);
+    out.push("سازگاری نهایی را کارشناس بر اساس پیکربندی دقیق تأیید می‌کند.");
+    return out.join("\n");
+  }
+  function reviewList(S) {
+    const out = [];
+    S.all.filter((l) => l.s === "rev").forEach((l) => l.rs.filter((r) => r.s === "rev").forEach((r) => out.push(`${C(l.x.code)}: ${r.text}`)));
+    return out;
+  }
+  function step4(S) {
+    const s = SERVERS[st.server], lines = S.all;
+    if (st.done) {
+      const q = inq.find((i) => i.code === st.done);
+      if (q) return `
+        <div class="done" role="status">
+          <h2>استعلام آزمایشی ثبت شد</h2>
+          <div class="track"><span>کد پیگیری آزمایشی</span><b>${q.code}</b></div>
+          <p>این استعلام فقط در همین مرورگر ذخیره شد و برای کسی ارسال نشد. کارشناس در نسخهٔ واقعی سازگاری نهایی را بررسی می‌کند.</p>
+          <div class="actions"><button class="btn btn-line" type="button" id="copy-done">کپی خلاصه</button><button class="btn btn-navy" type="button" id="new-config">پیکربندی تازه</button></div>
+        </div>${history()}`;
+    }
+    const bad = lines.filter((l) => l.s === "bad"), rev = reviewList(S);
+    const row = (l) => `<tr><td>${C(l.x.code)}<span class="why"><span class="spec">${l.kind === "ram" ? ramTitle(l.x) : diskTitle(l.x)}</span></span></td>
+      <td class="q">${fa(l.qty)} عدد</td><td class="c-st"><b class="t-${l.s}">${STAT[l.s]}</b>${l.s !== "ok" ? `<span class="why">${l.rs[0].text}</span>` : ""}</td></tr>`;
+    return `
+      <div class="sheet">
+        <div class="sheet-h"><div><h2>برگهٔ استعلام</h2><p>${new Intl.DateTimeFormat("fa-IR-u-ca-persian", { dateStyle: "long" }).format(new Date())}</p></div><span class="demo">دادهٔ نمایشی</span></div>
+        <div class="sheet-sec">
+          <dl class="kv">
+            <div><dt>مدل سرور</dt><dd><span class="spec">HPE ${s.name}</span></dd></div>
+            <div><dt>پیکربندی قفسه</dt><dd>${L(`${s.chassis} · ${s.bays.ifaces.join("/")}`)}</dd></div>
+            <div><dt>کاربرد</dt><dd>${st.use ? USES[st.use].label : '<span class="muted">تعیین نشده</span>'}</dd></div>
+            <div><dt>جمع</dt><dd>رم ${L(capGB(S.ramGB))} · خام ${L(capTB(S.rawTB))}</dd></div>
+          </dl>
+        </div>
+        <div class="sheet-sec">
+          <h3>قطعه‌ها</h3>
+          ${lines.length ? `<table class="tbl"><thead><tr><th>قطعه</th><th>تعداد</th><th>وضعیت در دمو</th></tr></thead><tbody>${lines.map(row).join("")}</tbody></table>` : '<p class="muted">هنوز رم یا دیسکی انتخاب نشده است.</p>'}
+        </div>
+        ${bad.length ? `<div class="sheet-sec"><div class="alert bad"><h3>ناسازگاری قطعی در دادهٔ دمو</h3><ul>${bad.map((l) => `<li>${C(l.x.code)}: ${l.rs[0].text}<button class="btn btn-line btn-sm" type="button" data-fixgo="${l.kind}|${l.x.code}">اصلاح</button></li>`).join("")}</ul></div></div>` : ""}
+        <div class="sheet-sec"><div class="alert rev"><h3>موارد نیازمند بررسی کارشناس</h3>${rev.length ? `<ul>${rev.map((r) => `<li>${r}</li>`).join("")}</ul>` : "<p>در دادهٔ دمو موردی نیست؛ سازگاری نهایی را کارشناس تأیید می‌کند.</p>"}</div></div>
+        <div class="sheet-sec">
+          <label for="note"><h3>توضیح برای کارشناس <span class="muted" style="font-weight:400">(اختیاری)</span></h3></label>
+          <textarea id="note" maxlength="300" placeholder="مثلاً: زمان تحویل، نیاز به نصب یا پیکربندی RAID">${st.note.replace(/</g, "&lt;")}</textarea>
+          <div class="actions">
+            <button class="btn btn-line" type="button" id="copy">کپی خلاصه</button>
+            <button class="btn btn-teal" type="button" id="submit" ${bad.length || !lines.length ? "disabled" : ""}>ثبت استعلام آزمایشی</button>
+            ${bad.length ? '<span class="hint">برای ثبت، ابتدا قطعه‌های ناسازگار را اصلاح یا حذف کنید.</span>' : !lines.length ? '<span class="hint">دست‌کم یک قطعه انتخاب کنید.</span>' : ""}
+          </div>
+          <p class="note-s">شماره تلفن یا اطلاعات خصوصی لازم نیست. استعلام فقط در همین مرورگر ثبت می‌شود.</p>
+        </div>
+      </div>
+      ${navRow(3, null)}${history()}`;
+  }
+  function history() {
+    if (!inq.length) return "";
+    const df = new Intl.DateTimeFormat("fa-IR-u-ca-persian", { day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" });
+    return `<details class="history"><summary>استعلام‌های آزمایشی این مرورگر (${fa(inq.length)})</summary><ul class="hist">${inq.slice().reverse().map((q) => `<li>${C(q.code)}<span>${df.format(new Date(q.at))}</span><span class="spec">${q.server}</span><span>رم ${L(q.ram)} · خام ${L(q.raw)}</span></li>`).join("")}</ul></details>`;
+  }
+  let prevMetrics = "";
+  function renderAside(S) {
+    const s = st.server && SERVERS[st.server];
+    const m = S ? [capGB(S.ramGB), `${S.ram.total}/${S.ram.cap}`, capTB(S.rawTB), `${S.disk.total}/${S.disk.cap}`] : ["0 GB", "–", "0 TB", "–"];
+    const key = m.join("|"), changed = prevMetrics && key !== prevMetrics; prevMetrics = key;
+    const tp = tips(S);
+    $("#aside").innerHTML = `<div class="box">
+      <h2>خلاصهٔ پیکربندی</h2>
+      <div class="sum-srv">${s ? `<span class="spec">HPE ${s.name}</span><span class="muted">${s.form} · ${L(s.chassis)}${st.use ? " · " + USES[st.use].label : ""}</span>` : '<span class="muted">هنوز مدلی انتخاب نشده است.</span>'}</div>
+      <div class="metrics" id="metrics">
+        <div class="metric ${changed ? "pulse" : ""}"><span>رم کل</span><b>${m[0]}</b><small>اسلات ${L(m[1])}</small></div>
+        <div class="metric ${changed ? "pulse" : ""}"><span>ظرفیت خام دیسک</span><b>${m[2]}</b><small>قفسه ${L(m[3])}</small></div>
+      </div>
+      ${S && S.all.length ? `<div class="counts"><span class="c-ok">${ICON.ok.replace("<svg", '<svg width="14" height="14"')}${fa(S.n.ok)} سازگار</span><span class="c-rev">${fa(S.n.rev)} نیازمند بررسی</span><span class="c-bad">${fa(S.n.bad)} ناسازگار</span></div>` : ""}
+      ${tp.length ? `<div><h2 style="font-size:13.5px;margin-bottom:6px">راهنمای ${USES[st.use].label} <span class="demo">نمونه</span></h2><ul class="tips">${tp.map(([y, t]) => `<li>${y ? `<span class="y">${ICON.ok}</span>` : `<span class="n">${ICON.rev}</span>`}<span>${t}</span></li>`).join("")}</ul></div>` : ""}
+      ${S && st.step < 4 ? `<button class="btn btn-navy" type="button" data-step="4">رفتن به برگهٔ استعلام ←</button>` : ""}
+      <p class="note-s">دادهٔ نمایشی؛ سازگاری واقعی را کارشناس بر اساس QuickSpecs و پیکربندی دقیق تأیید می‌کند.</p>
+    </div>`;
+    $("#mbar").innerHTML = `<div class="wrap"><div class="m"><span>رم<b>${m[0]}</b></span><span>خام<b>${m[2]}</b></span>${S && S.n.bad ? `<span class="t-bad">ناسازگار<b style="color:inherit">${fa(S.n.bad)}</b></span>` : ""}${S && S.n.rev ? `<span class="t-rev">بررسی<b style="color:inherit">${fa(S.n.rev)}</b></span>` : ""}</div>
+      ${st.step < 4 ? `<button class="btn btn-navy btn-sm" type="button" data-step="${st.step + 1}" ${!st.server ? "disabled" : ""}>مرحلهٔ بعد ←</button>` : ""}</div>`;
+    $("#mbar").hidden = !!st.done && st.step === 4;
+  }
+  function render() {
+    const a = document.activeElement, k = a && a.dataset ? a.dataset.k : null;
+    if (st.step > 1 && !st.server) st.step = 1;
+    const S = state();
+    renderSteps();
+    $("#panel").innerHTML = st.step === 1 ? step1() : st.step === 2 ? stepParts("ram", S) : st.step === 3 ? stepParts("disk", S) : step4(S);
+    renderAside(S);
+    if (k) { const el = document.querySelector(`[data-k="${k}"]`); if (el && !el.disabled) el.focus(); }
+    save();
+  }
+  function go(n) {
+    if (n > 1 && !st.server) { toast("ابتدا مدل سرور را انتخاب کنید."); return; }
+    st.step = n; if (n !== 4) st.done = null;
+    render();
+    const top = $(".steps").getBoundingClientRect().top + scrollY - (scnOn ? 56 : 0);
+    if (scrollY > top) scrollTo({ top, behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+  }
+  function flash(id) { const el = document.getElementById(id); if (!el) return; el.classList.remove("flash"); void el.offsetWidth; el.classList.add("flash"); el.scrollIntoView({ block: "center", behavior: "smooth" }); }
+  function setQty(kind, code, q) {
+    const max = kind === "ram" ? 32 : 24;
+    q = Math.max(0, Math.min(max, q));
+    if (q) st[kind][code] = q; else delete st[kind][code];
+    st.done = null;
+  }
+  function replace(kind, from, to) {
+    const q = st[kind][from] || 0; delete st[kind][from];
+    setQty(kind, to, (st[kind][to] || 0) + q);
+  }
+  function copy(text) {
+    const manual = () => {
+      const ta = document.createElement("textarea"); ta.value = text; ta.setAttribute("readonly", ""); ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select(); let ok = false; try { ok = document.execCommand("copy"); } catch (e) {}
+      ta.remove(); toast(ok ? "خلاصهٔ استعلام کپی شد." : "کپی ممکن نشد؛ مرورگر اجازه نداد.");
+    };
+    try { navigator.clipboard.writeText(text).then(() => toast("خلاصهٔ استعلام کپی شد."), manual); } catch (e) { manual(); }
+  }
+  function submit() {
+    const S = state();
+    if (!S || !S.all.length || S.n.bad) return;
+    const code = "INQ-" + seq; seq += 1;
+    inq.push({ code, at: Date.now(), server: "HPE " + SERVERS[st.server].name, ram: capGB(S.ramGB), raw: capTB(S.rawTB), text: summaryText(S) });
+    st.done = code; render(); toast("استعلام آزمایشی ثبت شد.");
+  }
+
+  /* ---------- events ---------- */
+  document.addEventListener("click", (e) => {
+    const b = e.target.closest("button"); if (!b || b.disabled) return;
+    const d = b.dataset;
+    if (d.step) return go(+d.step);
+    if (d.server) { st.server = d.server; st.done = null; render(); return; }
+    if (d.use) { st.use = d.use; render(); return; }
+    if (d.inc) { const [k, c, n] = d.inc.split("|"); setQty(k, c, (st[k][c] || 0) + +n); render(); return; }
+    if (d.setq) { const [k, c, n] = d.setq.split("|"); setQty(k, c, +n); render(); toast(+n ? "تعداد اصلاح شد." : "ردیف حذف شد."); return; }
+    if (d.replace) { const [k, f, t] = d.replace.split("|"); replace(k, f, t); render(); flash("part-" + t); toast("قطعه جایگزین شد."); return; }
+    if (d.fixgo) { const [k, c] = d.fixgo.split("|"); go(k === "ram" ? 2 : 3); requestAnimationFrame(() => flash("part-" + c)); return; }
+    if (b.id === "copy") { copy(summaryText(state())); return; }
+    if (b.id === "copy-done") { const q = inq.find((i) => i.code === st.done); if (q) copy(q.text); return; }
+    if (b.id === "submit") { submit(); return; }
+    if (b.id === "new-config") { st = Object.assign(blank(), { onlyFit: st.onlyFit }); render(); go(1); return; }
+  });
+  document.addEventListener("change", (e) => { if (e.target.id === "only-fit") { st.onlyFit = e.target.checked; render(); } });
+  document.addEventListener("input", (e) => { if (e.target.id === "note") { st.note = e.target.value; save(); } });
+  $("#reset-ask").addEventListener("click", () => { $("#reset-bar").hidden = false; $("#reset-yes").focus(); });
+  $("#reset-no").addEventListener("click", () => { $("#reset-bar").hidden = true; });
+  $("#reset-yes").addEventListener("click", () => {
+    try { localStorage.removeItem(KEY); } catch (e) {}
+    st = blank(); inq = []; seq = 3101; $("#reset-bar").hidden = true; render(); toast("دمو به حالت اولیه برگشت.");
+  });
+
+  /* ---------- sample scenario ---------- */
+  let scnOn = false, scnStop = false;
+  const SCN = [
+    "انتخاب سرور DL360 Gen10 Plus با قفسهٔ 8SFF و کاربرد مجازی‌سازی",
+    "افزودن ۸ ماژول 32GB DDR4-3200 RDIMM؛ سازگار در دمو",
+    "افزودن ۴ دیسک 8TB LFF؛ ناسازگار در دمو، چون قفسهٔ این مدل SFF است",
+    "اصلاح: جایگزینی با SSD 1.92TB SFF؛ فقط موجودی آن نیازمند بررسی است",
+    "برگهٔ استعلام و ثبت آزمایشی با کد پیگیری",
+  ];
+  async function scenario() {
+    if (scnOn) return;
+    scnOn = true; scnStop = false;
+    const fast = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const wait = (ms) => new Promise((r) => setTimeout(r, fast ? ms * 0.5 : ms));
+    const say = (i) => { $("#scn-n").textContent = fa(i + 1); $("#scn-t").textContent = SCN[i]; $("#scn-bar").style.width = ((i + 1) / SCN.length) * 100 + "%"; };
+    const lock = [$("#main"), $(".steps"), $("#mbar")]; $("#scn").hidden = false; lock.forEach((el) => (el.inert = true)); $("#scn-stop").focus();
+    try {
+      st = Object.assign(blank(), { onlyFit: false }); go(1); say(0); await wait(700); if (scnStop) return;
+      st.server = "dl360g10p"; render(); flash("srv-dl360g10p"); await wait(1100); if (scnStop) return;
+      st.use = "virt"; render(); await wait(1200); if (scnStop) return;
+      say(1); go(2); await wait(500);
+      for (let i = 1; i <= 8 && !scnStop; i++) { setQty("ram", "SC-M32-D4R32", i); render(); if (i === 1) flash("part-SC-M32-D4R32"); await wait(130); }
+      await wait(1400); if (scnStop) return;
+      say(2); go(3); await wait(500);
+      for (let i = 1; i <= 4 && !scnStop; i++) { setQty("disk", "SC-H8-SATA72-L", i); render(); if (i === 1) flash("part-SC-H8-SATA72-L"); await wait(160); }
+      flash("part-SC-H8-SATA72-L"); await wait(2400); if (scnStop) return;
+      say(3); replace("disk", "SC-H8-SATA72-L", "SC-S192-SAS-S"); render(); flash("part-SC-S192-SAS-S"); await wait(2600); if (scnStop) return;
+      say(4); go(4); await wait(1800); if (scnStop) return;
+      submit(); await wait(1600);
+    } finally {
+      scnOn = false; lock.forEach((el) => (el.inert = false)); $("#scn").hidden = true; $("#scn-bar").style.width = "0";
+      toast(scnStop ? "سناریوی نمونه متوقف شد." : "سناریوی نمونه تمام شد.");
+    }
+  }
+  $("#scn-run").addEventListener("click", scenario);
+  $("#scn-stop").addEventListener("click", () => { scnStop = true; });
+
+  render();
+})();
+</script>
+</body>
+</html>
